@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FDE Visualisation</title>
+
+    <script src="/.JS/script.js" defer></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="editorContainer">
+        <div class="container">
+            <table id="instructionSet" frame=void rules=rows>
+                <tr>
+                    <th> Instruction </th>
+                    <th> Explanation </th>
+                </tr>
+
+                <tr>
+                    <td> LoadV [Value] </td>
+                    <td> Loads the value into the Accumulator</td>
+                </tr>
+
+                <tr>
+                    <td> LoadA [Address] </td>
+                    <td> Loads the value at the address in RAM and stores it in the Accumulator </td>
+                </tr>
+
+                <tr>
+                    <td> Store [Address] </td>
+                    <td> Stores value in Accumulator at specified RAM address </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="container" id="editorWrapper">
+            <textarea cols="60" rows="30" id="editor"></textarea>
+        </div>
+    </div>
+    
+    <br>
+    <br>
+    <br>
+
+    <div id="internalsContainer">
+        <div class="container" id="visualContainer">
+            <div id="visual">
+                <!--
+                <div class="arrow">
+                    <div id="body"></div>
+                    <div id="head"></div>
+                </div>
+                -->
+
+                <div id="CPU">
+
+                </div>
+
+                <div id="busContainer">
+
+                </div>
+
+                <div class="container">
+                    <table id="RAM" frame=void rules=rows>
+                        <tr>
+                            <th> Address </th>
+                            <th> Value/Instruction </th>
+                        </tr>
+
+                        <!-- Loaded dynamically -->
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <table id="progress" frame=void rules=rows>
+                <tr> <td> Program counter set to 0 </td> </tr>
+                <tr> <td> etc...</td> </tr>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
