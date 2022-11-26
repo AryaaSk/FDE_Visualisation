@@ -37,6 +37,7 @@ const STEPS = [
 ];
 let STEP_COUNTER = 0;
 let CURRENT_CYCLE: string[] = [];
+let CYCLE_COUNTER = 0;
 
 
 
@@ -89,6 +90,30 @@ const OPERATIONS: { [operation: string] : { description: string, explanation: st
 
 
 
+const InitialiseInstructionSet = () => {
+    const instructionSetTable = document.getElementById("instructionSet")!;
+    
+    instructionSetTable.innerHTML = "";
+    const headers = document.createElement('tr');
+    headers.innerHTML = `
+    <th> Instruction </th>
+    <th> Explanation </th>
+    `;
+    instructionSetTable.append(headers);
+
+    for (const key in OPERATIONS) {
+        const instruction = OPERATIONS[key];
+        const row = document.createElement('tr');
+        row.innerHTML = `
+        <td>${instruction.description}</td>
+        <td>${instruction.explanation}</td>
+        `;
+        instructionSetTable.append(row);
+    }
+}
+
+
+
 const ResetRAM = (bits: number) => {
     for (let _ = 0; _ != bits; _ += 1) {
         RAM.push(Instruction("", 0));
@@ -131,7 +156,26 @@ const SyncComponents = () => {
     }
 
 
-    
+    const cycleProgressText = document.getElementById("cycleProgressText")!;
+    cycleProgressText.innerText = `Cycle ${CYCLE_COUNTER + 1}`; //CYCLE_COUNTER starts at 0, but 1 is more understandable
+
+    const progressTable = document.getElementById("progress")!;
+    progressTable.innerHTML = "";
+    for (const update of CURRENT_CYCLE) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td> ${update} </td>`;
+
+        if (update == "Prepare for next cycle") {
+            row.className = "final";
+        }
+        progressTable.append(row);
+    }
+
+    if (CURRENT_CYCLE.length == 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td><i> No progress yet... </i></td>`;
+        progressTable.append(row);
+    }
 }
 
 
@@ -158,7 +202,7 @@ const IncrementStep = () => {
     }
     else if (step == "Increment PC") {
         PC += 1;
-        ProgressUpdate(`Increment PC (${PC})`);
+        ProgressUpdate(`Increment PC (${PC - 1} → ${PC})`);
     }
 
     //Decode
@@ -187,6 +231,8 @@ const IncrementStep = () => {
         const operation = CIR.opcode;
         const value = MDR.operand!;
         OPERATIONS[operation].callback(value);
+
+        ProgressUpdate("Prepare for next cycle"); //put in penultimate step as the next step the cycle will be reset so the user won't even see this update
     }
 
     //Preparing for next cycle
@@ -196,10 +242,10 @@ const IncrementStep = () => {
         ResetComponents();
         PC = previousPCValue;
         Accumulator = previousAccumulatorValue;
-        ProgressUpdate("Prepare for next cycle");
         
         STEP_COUNTER = -1; //it will go back to 0 on next iteration
         CURRENT_CYCLE = [];
+        CYCLE_COUNTER += 1;
     }
 
     SyncComponents();
@@ -212,6 +258,8 @@ const ProgressUpdate = (update: string) => {
 
 
 const Main = () => {
+    InitialiseInstructionSet();
+
     ResetRAM(RAM_STORAGE);
     RAM[0] = Instruction("LOADV", 10);
     RAM[1] = Instruction("STORE", 0);

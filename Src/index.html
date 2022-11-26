@@ -10,6 +10,8 @@
 </head>
 <body>
 
+    <h1><u>Fetch-Decode-Execute Visualisation</u></h1>
+
     <div id="editorContainer">
         <div class="container">
             <table id="instructionSet" frame=void rules=rows>
@@ -18,29 +20,15 @@
                     <th> Explanation </th>
                 </tr>
 
-                <tr>
-                    <td> LoadV [Value] </td>
-                    <td> Loads the value into the Accumulator</td>
-                </tr>
-
-                <tr>
-                    <td> LoadA [Address] </td>
-                    <td> Loads the value at the address in RAM and stores it in the Accumulator </td>
-                </tr>
-
-                <tr>
-                    <td> Store [Address] </td>
-                    <td> Stores value in Accumulator at specified RAM address </td>
-                </tr>
+                <!-- Added dynamically -->
             </table>
         </div>
 
         <div class="container" id="editorWrapper">
-            <textarea cols="60" rows="30" id="editor"></textarea>
+            <textarea id="editor"></textarea>
         </div>
     </div>
     
-    <br>
     <br>
     <br>
 
@@ -77,9 +65,7 @@
                     </div>
                 </div>
 
-                <div id="busContainer">
-
-                </div>
+                <div id="busContainer"></div>
 
                 <div class="container">
                     <table id="RAM" frame=void rules=rows>
@@ -94,9 +80,12 @@
             </div>
         </div>
 
-        <div class="container">
+        <div class="container" id="progressWrapper">
+            <h2 id="cycleProgressText">Cycle X</h2>
+
             <table id="progress" frame=void rules=rows>
                 <tr> <td> Program counter set to 0 </td> </tr>
+                <!-- Set dynamically -->
             </table>
         </div>
     </div>
