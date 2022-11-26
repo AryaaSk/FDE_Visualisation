@@ -6,13 +6,8 @@ interface Instruction {
 const Instruction = (opcode: string, operand?: number) => {
     return { opcode: opcode, operand: operand };
 }
-const OperationVorR: {[operation: string] : string} = { //dictionary containing information whether an instruction's operand is a value or reference in RAM
-    "LOADV" : "V",
-    "LOADA" : "R",
-    "ADD": "R",
-    "STORE": "V"
-}
-//V stands for value, R stands for reference
+
+
 
 let PC = 0;
 let MAR: number | undefined = undefined;
@@ -21,6 +16,7 @@ let CIR = Instruction("", undefined);;
 let Accumulator: number | undefined = undefined;
 
 const RAM: Instruction[] = [];
+const RAM_STORAGE = 16; //16 bits
 
 const STEPS = [
     //Fetch
@@ -30,7 +26,7 @@ const STEPS = [
     "Increment PC",
 
     //Decode
-    "Copy CIR Operand into MAR/MDR",
+    "Copy CIR Operand into MAR",
     "Fetch value from RAM into MDR",
 
     //Execute
@@ -40,6 +36,56 @@ const STEPS = [
     "Next cycle"
 ];
 let STEP_COUNTER = 0;
+let CURRENT_CYCLE: string[] = [];
+
+
+
+//INSTRUCTION SET
+//Some operations will take a RAM address as the parameter, e.g. LOADA, others will just take the value, e.g. STORE
+//Callback takes in value to use (either from MDR for references or MAR for value operations)
+const OPERATIONS: { [operation: string] : { description: string, explanation: string, callback: (value: number) => void; addressOrValue: "A" | "V" } } = {
+    "LOADV": {
+        description: "LOADV [Value]",
+        explanation: "Loads the value into the Accumulator",
+        callback: (value: number) => {
+            Accumulator = value;
+            ProgressUpdate(`Loaded ${value} from MAR into Accumulator`);
+        },
+        addressOrValue: "V"
+    },
+    "LOADA": {
+        description: "LOADA [Address]",
+        explanation: "Loads the value at the address in RAM into the Accumulator",
+        callback: (value: number) => {
+            Accumulator = value;
+            ProgressUpdate(`Loaded ${value} from MDR into Accumulator`);
+        },
+        addressOrValue: "A"
+    },
+    "ADD": {
+        description: "ADD [Address]",
+        explanation: "Adds value from accumulator to value at specified RAM address, and stores result in accumulator",
+        callback: (value: number) => {
+            const value1 = Accumulator!;
+            const value2 = value;
+            const result = value1 + value2;
+            Accumulator = result;
+            ProgressUpdate(`Added together ${value1} and ${value2}, and stored result (${result}) in Accumulator`);
+        },
+        addressOrValue: "A"
+    },
+    "STORE": {
+        description: "Store [Address]",
+        explanation: "Stores value in Accumulator at specified RAM address",
+        callback: (value: number) => {
+            const address = value;
+            RAM[address].opcode = "";
+            RAM[address].operand = Accumulator
+            ProgressUpdate(`Stored ${Accumulator} at address ${address} in RAM`);
+        },
+        addressOrValue: "V"
+    }
+}
 
 
 
@@ -83,6 +129,9 @@ const SyncComponents = () => {
         `;
         RAMTable.append(row)
     }
+
+
+    
 }
 
 
@@ -94,59 +143,50 @@ const IncrementStep = () => {
     //Fetch
     if (step == "Copy PC into MAR") {
         MAR = PC;
+        ProgressUpdate(`Copy PC into MAR (${MAR})`);
     }
     else if (step == "Fetch from RAM into MDR") {
         const instruction = RAM[MAR!];
         MDR.opcode = instruction.opcode;
         MDR.operand = instruction.operand;
+        ProgressUpdate(`Fetch from RAM into MDR (${MDR.opcode} ${MDR.operand})`);
     }
     else if (step == "Copy MDR into CIR") {
         CIR.opcode = MDR.opcode;
         CIR.operand = MDR.operand;
+        ProgressUpdate(`Copy MDR into CIR (${CIR.opcode} ${CIR.operand})`);
     }
     else if (step == "Increment PC") {
         PC += 1;
+        ProgressUpdate(`Increment PC (${PC})`);
     }
 
     //Decode
-    if (OperationVorR[CIR.opcode] == "R") {
-        if (step == "Copy CIR Operand into MAR/MDR") {
-            MAR = CIR.operand;
-        }
-        else if (step == "Fetch value from RAM into MDR") {
+    else if (step == "Copy CIR Operand into MAR") {
+        MAR = CIR.operand;
+        ProgressUpdate(`Copy CIR Operand into MAR (${MAR})`);
+    }
+    else if (step == "Fetch value from RAM into MDR") {
+        if (OPERATIONS[CIR.opcode].addressOrValue == "A") {
             const value = RAM[MAR!].operand!; 
             MDR.opcode = "";
             MDR.operand = value;
+            ProgressUpdate(`Fetch value from RAM into MDR (${MDR.operand!})`);
         }
-    }
-    else if (OperationVorR[CIR.opcode] == "V"){
-        //Instead of moving operand to MAR to fetch value at that address, we simply move the operand straight to the MDR
-        if (step == "Copy CIR Operand into MAR/MDR") {
+        else {
+            //MAR address was intended to be a value, so we can directly use value from MAR rather than passing through RAM into MDR
+            const value = MAR!;
             MDR.opcode = "";
-            MDR.operand = CIR.operand!;
-            STEP_COUNTER += 1; //skip Fetch value from RAM into MDR, since it we already have the value in the MDR
+            MDR.operand = value;
+            ProgressUpdate(`Copy value from MAR into MDR (${MDR.operand!})`);
         }
     }
 
     //Execute
-    if (step == "Execute CIR Opcode") {
+    else if (step == "Execute CIR Opcode") {
         const operation = CIR.opcode;
         const value = MDR.operand!;
-
-        if (operation == "LOADA" || operation == "LOADV") {
-            Accumulator = value;
-        }
-        else if (operation == "ADD") {
-            const value1 = Accumulator!;
-            const value2 = value;
-            const result = value1 + value2;
-            Accumulator = result;
-        }
-        else if (operation == "STORE") {
-            const address = value;
-            RAM[address].opcode = "";
-            RAM[address].operand = Accumulator
-        }
+        OPERATIONS[operation].callback(value);
     }
 
     //Preparing for next cycle
@@ -156,30 +196,37 @@ const IncrementStep = () => {
         ResetComponents();
         PC = previousPCValue;
         Accumulator = previousAccumulatorValue;
+        ProgressUpdate("Prepare for next cycle");
         
         STEP_COUNTER = -1; //it will go back to 0 on next iteration
+        CURRENT_CYCLE = [];
     }
 
     SyncComponents();
     STEP_COUNTER += 1;
 }
+const ProgressUpdate = (update: string) => {
+    CURRENT_CYCLE.push(update);
+}
 
 
 
 const Main = () => {
-    ResetRAM(16);
-    RAM[4] = Instruction("", 10);
-    RAM[5] = Instruction("", 25);
-    RAM[0] = Instruction("LOADA", 4);
-    RAM[1] = Instruction("ADD", 5);
-    RAM[2] = Instruction("STORE", 6);
+    ResetRAM(RAM_STORAGE);
+    RAM[0] = Instruction("LOADV", 10);
+    RAM[1] = Instruction("STORE", 0);
+    RAM[2] = Instruction("LOADV", 25);
+    RAM[3] = Instruction("STORE", 1);
+    RAM[4] = Instruction("LOADA", 0);
+    RAM[5] = Instruction("ADD", 1);
+    RAM[6] = Instruction("STORE", 2);
 
     ResetComponents();
     SyncComponents();
 
     STEP_COUNTER = 0;
     document.onkeydown = ($e) => {
-        if ($e.key == " ") {
+        if ($e.key == "a") {
             IncrementStep();
         }
     }
