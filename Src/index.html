@@ -54,8 +54,27 @@
                 </div>
                 -->
 
-                <div id="CPU">
-
+                <div id="CPU">                    
+                    <div class="register" id="PC">
+                        <h2> PC </h3>
+                        <div class="container" id="PCText"> 1 </div>
+                    </div>
+                    <div class="register" id="MAR">
+                        <h2> MAR </h3>
+                        <div class="container" id="MARText"> 1 </div>
+                    </div>
+                    <div class="register" id="MDR">
+                        <h2> MDR </h3>
+                        <div class="container" id="MDRText"> 0 </div>
+                    </div>
+                    <div class="register" id="CIR">
+                        <h2> CIR </h3>
+                        <div class="container" id="CIRText"> LOAD 120 </div>
+                    </div>
+                    <div class="register" id="Accumulator">
+                        <h2> Acc </h3>
+                        <div class="container" id="AccumulatorText"> 1 </div>
+                    </div>
                 </div>
 
                 <div id="busContainer">
@@ -66,7 +85,7 @@
                     <table id="RAM" frame=void rules=rows>
                         <tr>
                             <th> Address </th>
-                            <th> Value/Instruction </th>
+                            <th> Value </th>
                         </tr>
 
                         <!-- Loaded dynamically -->
@@ -78,7 +97,6 @@
         <div class="container">
             <table id="progress" frame=void rules=rows>
                 <tr> <td> Program counter set to 0 </td> </tr>
-                <tr> <td> etc...</td> </tr>
             </table>
         </div>
     </div>

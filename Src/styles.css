@@ -37,7 +37,7 @@ td {
 
 
 #internalsContainer {
-    height: min-content;
+    height: max-content;
     width: 100%;
 
     display: grid;
@@ -50,11 +50,11 @@ td {
     justify-content: center;
 }
 #visual {
-    height: 40vh;
+    height: max-content;
     width: 95%;
 
     display: grid;
-    grid-template-columns: 50% 15% 35%;
+    grid-template-columns: 55% 10% 35%;
     grid-template-rows: 100%;
 }
 #progress {
@@ -64,6 +64,13 @@ td {
 
     border-collapse: collapse;
     border: solid thin;
+}
+
+@media (min-width:320px) and (max-width: 800px)  { 
+    #internalsContainer {
+        grid-template-columns: 100%;
+        grid-template-rows: 100% 100%;
+    }
 }
 
 
@@ -81,12 +88,11 @@ td {
 #busContainer {
     height: 100%;
     width: 100%;
-
-    background-color: lime;
 }
 #RAM {
     height: 100%;
     width: 100%;
+    table-layout: fixed;
 
     border-collapse: collapse;
     border: solid thin;
@@ -94,6 +100,75 @@ td {
 #RAM th, td {
     border-right: solid thin;
 }
+
+.register {
+    position: absolute;
+    max-height: 28%;
+    max-width: 40%;
+    width: 40%;
+    height: auto;
+    aspect-ratio: 1/1;
+
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: max-content auto;
+
+    padding: 5px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+
+    border: solid thin;
+    background-color: white;
+    text-align: center;
+}
+.register > h2 {
+    margin: 0;
+}
+.register > .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+
+    font-size: 2rem;
+    translate: 0 -5px; /* Seems to center it better */
+}
+
+@media (min-width:320px) and (max-width: 660px)  { 
+    .register > h2 {
+        font-size: medium;
+        margin-bottom: 2px;
+    }
+    .register > .container {
+        font-size: 1.2rem;
+    }    
+}
+
+#PC {
+    top: 5%;
+    left: 5%;
+}
+#MAR {
+    top: 5%;
+    right: 5%;
+}
+#MDR {
+    bottom: 5%;
+    right: 5%;
+}
+#CIR {
+    top: 50%;  /* position the top  edge of the element at the middle of the parent */
+    left: 50%; /* position the left edge of the element at the middle of the parent */
+
+    transform: translate(-50%, -50%); /* This is a shorthand of
+                                         translateX(-50%) and translateY(-50%) */
+}
+#Accumulator {
+    bottom: 5%;
+    left: 5%;
+}
+
 
 
 
