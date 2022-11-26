@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FDE Visualisation</title>
 
+    <script src="/.JS/instructionSet.js"></script>
     <script src="/.JS/script.js" defer></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,10 +26,18 @@
         </div>
 
         <div class="container" id="editorWrapper">
-            <textarea id="editor"></textarea>
+            <textarea id="editor" placeholder="Write assembly code using instruction set"></textarea>
         </div>
     </div>
     
+    <br>
+    <br>
+
+    <div id="buttons">
+        <button class="runButton" id="compile">Compile Assembly Code</button>
+        <button class="runButton" id="increment">Next Step</button>
+    </div>
+
     <br>
     <br>
 

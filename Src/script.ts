@@ -15,7 +15,7 @@ let MDR = Instruction("", undefined);;
 let CIR = Instruction("", undefined);;
 let Accumulator: number | undefined = undefined;
 
-const RAM: Instruction[] = [];
+let RAM: Instruction[] = [];
 const RAM_STORAGE = 16; //16 bits
 
 const STEPS = [
@@ -38,79 +38,7 @@ const STEPS = [
 let STEP_COUNTER = 0;
 let CURRENT_CYCLE: string[] = [];
 let CYCLE_COUNTER = 0;
-
-
-
-//INSTRUCTION SET
-//Some operations will take a RAM address as the parameter, e.g. LOADA, others will just take the value, e.g. STORE
-//Callback takes in value to use (either from MDR for references or MAR for value operations)
-const OPERATIONS: { [operation: string] : { description: string, explanation: string, callback: (value: number) => void; addressOrValue: "A" | "V" } } = {
-    "LOADV": {
-        description: "LOADV [Value]",
-        explanation: "Loads the value into the Accumulator",
-        callback: (value: number) => {
-            Accumulator = value;
-            ProgressUpdate(`Loaded ${value} from MAR into Accumulator`);
-        },
-        addressOrValue: "V"
-    },
-    "LOADA": {
-        description: "LOADA [Address]",
-        explanation: "Loads the value at the address in RAM into the Accumulator",
-        callback: (value: number) => {
-            Accumulator = value;
-            ProgressUpdate(`Loaded ${value} from MDR into Accumulator`);
-        },
-        addressOrValue: "A"
-    },
-    "ADD": {
-        description: "ADD [Address]",
-        explanation: "Adds value from accumulator to value at specified RAM address, and stores result in accumulator",
-        callback: (value: number) => {
-            const value1 = Accumulator!;
-            const value2 = value;
-            const result = value1 + value2;
-            Accumulator = result;
-            ProgressUpdate(`Added together ${value1} and ${value2}, and stored result (${result}) in Accumulator`);
-        },
-        addressOrValue: "A"
-    },
-    "STORE": {
-        description: "Store [Address]",
-        explanation: "Stores value in Accumulator at specified RAM address",
-        callback: (value: number) => {
-            const address = value;
-            RAM[address].opcode = "";
-            RAM[address].operand = Accumulator
-            ProgressUpdate(`Stored ${Accumulator} at address ${address} in RAM`);
-        },
-        addressOrValue: "V"
-    }
-}
-
-
-
-const InitialiseInstructionSet = () => {
-    const instructionSetTable = document.getElementById("instructionSet")!;
-    
-    instructionSetTable.innerHTML = "";
-    const headers = document.createElement('tr');
-    headers.innerHTML = `
-    <th> Instruction </th>
-    <th> Explanation </th>
-    `;
-    instructionSetTable.append(headers);
-
-    for (const key in OPERATIONS) {
-        const instruction = OPERATIONS[key];
-        const row = document.createElement('tr');
-        row.innerHTML = `
-        <td>${instruction.description}</td>
-        <td>${instruction.explanation}</td>
-        `;
-        instructionSetTable.append(row);
-    }
-}
+let PROGRAM_HALTED = false;
 
 
 
@@ -119,7 +47,6 @@ const ResetRAM = (bits: number) => {
         RAM.push(Instruction("", 0));
     }
 }
-
 const ResetComponents = () => {
     PC = 0;
     MAR = undefined;
@@ -168,6 +95,9 @@ const SyncComponents = () => {
         if (update == "Prepare for next cycle") {
             row.className = "final";
         }
+        else if (update == "Stopped program") {
+            row.className = "finalStopped";
+        }
         progressTable.append(row);
     }
 
@@ -177,10 +107,94 @@ const SyncComponents = () => {
         progressTable.append(row);
     }
 }
+const InitialiseInstructionSet = () => {
+    const instructionSetTable = document.getElementById("instructionSet")!;
+    
+    instructionSetTable.innerHTML = "";
+    const headers = document.createElement('tr');
+    headers.innerHTML = `
+    <th> Instruction </th>
+    <th> Explanation </th>
+    `;
+    instructionSetTable.append(headers);
+
+    for (const key in OPERATIONS) {
+        const instruction = OPERATIONS[key];
+        const row = document.createElement('tr');
+        row.innerHTML = `
+        <td>${instruction.description}</td>
+        <td>${instruction.explanation}</td>
+        `;
+        instructionSetTable.append(row);
+    }
+}
+
+const InitListeners = () => {
+    const compileButton = document.getElementById("compile")!;
+    const nextStepButton = document.getElementById("increment")!;
+
+    compileButton.onclick = () => {
+        CompileAssemblyCode();
+    }
+    nextStepButton.onclick = () => {
+        IncrementStep();
+    }
+}
+
+
+
+const CompileAssemblyCode = () => {
+    const editor = <HTMLTextAreaElement>document.getElementById("editor")!;
+    const text = editor.value;
+    const lines = text.split("\n");
+
+    const instructions: Instruction[] = [];
+    for (const line of lines) {
+        if (line.trim() == "") {
+            continue; //just a break line
+        }
+
+        const split = line.split(" ");
+        const opcode = split[0];
+        const operand = Number(split[1]);
+
+        if (OPERATIONS[opcode] == undefined) {
+            alert(`Invalid operation "${opcode}"`);
+            return;
+        }
+
+        instructions.push(Instruction(opcode, operand));
+    }
+    
+    if (instructions.length > RAM_STORAGE) {
+        alert(`Not enough memory, RAM only has ${RAM_STORAGE} bits`);
+        return;
+    }
+    else if (instructions.length < RAM_STORAGE) {
+        //need to fill up remaining RAM slots with 0s
+        const remainingSlots = RAM_STORAGE - instructions.length;
+        for (let _ = 0; _ != remainingSlots; _ += 1) {
+            instructions.push(Instruction("", 0));
+        }
+    }
+
+    RAM = JSON.parse(JSON.stringify(instructions));
+
+    STEP_COUNTER = 0; //reset all components since the program is effectively being reset
+    CURRENT_CYCLE = [];
+    CYCLE_COUNTER = 0;
+    PROGRAM_HALTED = false;
+    ResetComponents();
+    SyncComponents();
+}
 
 
 
 const IncrementStep = () => {
+    if (PROGRAM_HALTED == true) {
+        return;
+    }
+
     //Just use steps at top as instructions, and follow what they say
     const step = STEPS[STEP_COUNTER];
 
@@ -232,7 +246,12 @@ const IncrementStep = () => {
         const value = MDR.operand!;
         OPERATIONS[operation].callback(value);
 
-        ProgressUpdate("Prepare for next cycle"); //put in penultimate step as the next step the cycle will be reset so the user won't even see this update
+        if (operation != "HALT") {
+            ProgressUpdate("Prepare for next cycle"); //put in penultimate step as the next step the cycle will be reset so the user won't even see this update
+        }
+        else {
+            ProgressUpdate("Stopped program");
+        }
     }
 
     //Preparing for next cycle
@@ -261,6 +280,17 @@ const Main = () => {
     InitialiseInstructionSet();
 
     ResetRAM(RAM_STORAGE);
+    STEP_COUNTER = 0;
+    CURRENT_CYCLE = [];
+    CYCLE_COUNTER = 0;
+    PROGRAM_HALTED = false;
+    ResetComponents();
+    SyncComponents();
+
+    InitListeners();
+
+    /*
+    Sample assembly code to add together 10 and 25, and store result at address 2
     RAM[0] = Instruction("LOADV", 10);
     RAM[1] = Instruction("STORE", 0);
     RAM[2] = Instruction("LOADV", 25);
@@ -269,14 +299,16 @@ const Main = () => {
     RAM[5] = Instruction("ADD", 1);
     RAM[6] = Instruction("STORE", 2);
 
-    ResetComponents();
-    SyncComponents();
+    Assembly:
+    LOADV 10
+    STORE 0
+    LOADV 25
+    STORE 1
+    LOADA 0
 
-    STEP_COUNTER = 0;
-    document.onkeydown = ($e) => {
-        if ($e.key == "a") {
-            IncrementStep();
-        }
-    }
+    ADD 1
+    STORE 2
+    HALT 0
+    */
 }
 Main();
