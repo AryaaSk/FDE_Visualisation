@@ -168,7 +168,7 @@ const IncrementStep = () => {
         const instruction = RAM[MAR];
         MDR.opcode = instruction.opcode;
         MDR.operand = instruction.operand;
-        ProgressUpdate(`Fetch from RAM into MDR (${MDR.opcode} ${MDR.operand})`);
+        ProgressUpdate(`Fetch from RAM address ${MAR} into MDR (${MDR.opcode} ${MDR.operand})`);
     }
     else if (step == "Copy MDR into CIR") {
         CIR.opcode = MDR.opcode;
@@ -239,7 +239,7 @@ const Main = () => {
     SyncComponents();
     InitListeners();
     /*
-    Sample assembly code to add together 10 and 25, and store result at address 2
+    Sample assembly code to load 10 and 25, then add them together and store result at address 2
     RAM[0] = Instruction("LOADV", 10);
     RAM[1] = Instruction("STORE", 0);
     RAM[2] = Instruction("LOADV", 25);

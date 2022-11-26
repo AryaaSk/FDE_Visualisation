@@ -4,7 +4,7 @@
 const OPERATIONS: { [operation: string] : { description: string, explanation: string, callback: (value: number) => void; addressOrValue: "A" | "V" } } = {
     "LOADV": {
         description: "LOADV [Value]",
-        explanation: "Loads the value into the Accumulator",
+        explanation: "Loads value into the Accumulator",
         callback: (value: number) => {
             Accumulator = value;
             ProgressUpdate(`Loaded ${value} from MAR into Accumulator`);
@@ -13,7 +13,7 @@ const OPERATIONS: { [operation: string] : { description: string, explanation: st
     },
     "LOADA": {
         description: "LOADA [Address]",
-        explanation: "Loads the value at the address in RAM into the Accumulator",
+        explanation: "Loads value at the address in RAM into the Accumulator",
         callback: (value: number) => {
             Accumulator = value;
             ProgressUpdate(`Loaded ${value} from MDR into Accumulator`);
@@ -37,9 +37,13 @@ const OPERATIONS: { [operation: string] : { description: string, explanation: st
         explanation: "Stores value in Accumulator at specified RAM address",
         callback: (value: number) => {
             const address = value;
+            MDR.opcode = "";
+            MDR.operand = Accumulator;
+            ProgressUpdate(`Passed value from Accumulator to MDR (${MDR.operand!})`);
+
             RAM[address].opcode = "";
-            RAM[address].operand = Accumulator
-            ProgressUpdate(`Stored ${Accumulator} at address ${address} in RAM`);
+            RAM[address].operand = MDR.operand!;
+            ProgressUpdate(`Stored ${Accumulator} from MDR at address ${address} in RAM`);
         },
         addressOrValue: "V"
     },
@@ -49,6 +53,15 @@ const OPERATIONS: { [operation: string] : { description: string, explanation: st
         callback: (value: number) => {
             PROGRAM_HALTED = true;
             //Progress update handled in the IncrementStep() function
+        },
+        addressOrValue: "V"
+    },
+    "GOTO": {
+        description: "GOTO [Value]",
+        explanation: "Changes changes value of PC, which allows you to jump to a specific instruction in RAM",
+        callback: (value: number) => {
+            PC = value;
+            ProgressUpdate(`Set PC to ${value}`);
         },
         addressOrValue: "V"
     }

@@ -5,7 +5,7 @@
 const OPERATIONS = {
     "LOADV": {
         description: "LOADV [Value]",
-        explanation: "Loads the value into the Accumulator",
+        explanation: "Loads value into the Accumulator",
         callback: (value) => {
             Accumulator = value;
             ProgressUpdate(`Loaded ${value} from MAR into Accumulator`);
@@ -14,7 +14,7 @@ const OPERATIONS = {
     },
     "LOADA": {
         description: "LOADA [Address]",
-        explanation: "Loads the value at the address in RAM into the Accumulator",
+        explanation: "Loads value at the address in RAM into the Accumulator",
         callback: (value) => {
             Accumulator = value;
             ProgressUpdate(`Loaded ${value} from MDR into Accumulator`);
@@ -38,9 +38,12 @@ const OPERATIONS = {
         explanation: "Stores value in Accumulator at specified RAM address",
         callback: (value) => {
             const address = value;
+            MDR.opcode = "";
+            MDR.operand = Accumulator;
+            ProgressUpdate(`Passed value from Accumulator to MDR (${MDR.operand})`);
             RAM[address].opcode = "";
-            RAM[address].operand = Accumulator;
-            ProgressUpdate(`Stored ${Accumulator} at address ${address} in RAM`);
+            RAM[address].operand = MDR.operand;
+            ProgressUpdate(`Stored ${Accumulator} from MDR at address ${address} in RAM`);
         },
         addressOrValue: "V"
     },
@@ -50,6 +53,15 @@ const OPERATIONS = {
         callback: (value) => {
             PROGRAM_HALTED = true;
             //Progress update handled in the IncrementStep() function
+        },
+        addressOrValue: "V"
+    },
+    "GOTO": {
+        description: "GOTO [Value]",
+        explanation: "Changes changes value of PC, which allows you to jump to a specific instruction in RAM",
+        callback: (value) => {
+            PC = value;
+            ProgressUpdate(`Set PC to ${value}`);
         },
         addressOrValue: "V"
     }
