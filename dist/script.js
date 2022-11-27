@@ -116,14 +116,14 @@ const IncrementStep = () => {
             const value = RAM[MAR].operand;
             MDR.opcode = "";
             MDR.operand = value;
-            ProgressUpdate(`Fetch value from RAM into MDR (${MDR.operand})`);
+            ProgressUpdate(`Fetch value from RAM address ${MAR} into MDR (${MDR.operand})`);
         }
         else {
             //MAR address was intended to be a value, so we can directly use value from MAR rather than passing through RAM into MDR
             const value = MAR;
             MDR.opcode = "";
             MDR.operand = value;
-            ProgressUpdate(`Copy value from MAR into MDR (${MDR.operand})`);
+            ProgressUpdate(`Copy value directly from MAR into MDR (${MDR.operand})`);
         }
     }
     //Execute

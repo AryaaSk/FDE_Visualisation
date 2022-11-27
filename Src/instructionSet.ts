@@ -57,7 +57,7 @@ const OPERATIONS: { [operation: string] : { description: string, explanation: st
         addressOrValue: "V"
     },
     "GOTO": {
-        description: "GOTO [Value]",
+        description: "GOTO [Address]",
         explanation: "Changes changes value of PC, which allows you to jump to a specific instruction in RAM",
         callback: (value: number) => {
             PC = value;
