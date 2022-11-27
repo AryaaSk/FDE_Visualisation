@@ -70,10 +70,11 @@ td {
 }
 .runButton {
     height: 50px;
-    width: 100px;
+    width: 120px;
 
     border: solid thin;
     background-color: whitesmoke;
+    font-size: 0.8rem;
 }
 .runButton:active {
     background-color: lightgray;

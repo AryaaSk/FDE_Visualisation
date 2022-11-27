@@ -188,5 +188,17 @@ const Main = () => {
     STORE 2
     HALT 0
     */
+    const editor = document.getElementById("editor");
+    editor.value =
+        `LOADV 10
+STORE 0
+LOADV 25
+STORE 1
+
+LOADA 0
+ADD 1
+STORE 2
+HALT 0
+    `;
 };
 Main();
