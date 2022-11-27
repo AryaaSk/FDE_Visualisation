@@ -3,7 +3,7 @@
 # git add .
 
 #Generated files
-/dist
+#/dist
 /.firebase
 
 #System Files
