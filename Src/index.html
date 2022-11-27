@@ -6,6 +6,7 @@
     <title>FDE Visualisation</title>
 
     <script src="/.JS/instructionSet.js"></script>
+    <script src="/.JS/UI.js"></script>
     <script src="/.JS/script.js" defer></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -36,6 +37,7 @@
     <div id="buttons">
         <button class="runButton" id="compile">Compile Assembly Code</button>
         <button class="runButton" id="increment">Next Step</button>
+        <button class="runButton" id="nextCycle">Next Cycle</button>
     </div>
 
     <br>
@@ -44,14 +46,8 @@
     <div id="internalsContainer">
         <div class="container" id="visualContainer">
             <div id="visual">
-                <!--
-                <div class="arrow">
-                    <div id="body"></div>
-                    <div id="head"></div>
-                </div>
-                -->
 
-                <div id="CPU">                    
+                <div id="CPU">
                     <div class="register" id="PC">
                         <h2> PC </h3>
                         <div class="container" id="PCText"> 1 </div>
@@ -74,7 +70,17 @@
                     </div>
                 </div>
 
-                <div id="busContainer"></div>
+                <div id="busContainer">
+                    <div class="arrow" id="addressBus">
+                        <div id="body"></div>
+                        <div id="head"></div>
+                    </div>
+                    <div class="arrow" id="dataBus">
+                        <div id="headLeft"></div>
+                        <div id="body"></div>
+                        <div id="headRight"></div>
+                    </div>
+                </div>
 
                 <div class="container">
                     <table id="RAM" frame=void rules=rows>
@@ -97,6 +103,10 @@
                 <!-- Set dynamically -->
             </table>
         </div>
+    </div>
+
+    <div id="disclaimer">
+        <i>This is not 100% accurate, I have hidden crucial components such as the Clock or ALU to keep it simple</i>
     </div>
 
 </body>

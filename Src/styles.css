@@ -41,6 +41,7 @@ td {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    padding: 5px;
 
     font-size: large;
     resize: none;
@@ -60,7 +61,7 @@ td {
     width: 100%;
 
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 33.3% 33.3% 33.3%;
     grid-template-rows: 100%;
     place-items: center;
 }
@@ -84,15 +85,24 @@ td {
     display: grid;
     grid-template-columns: 70% 30%;
     grid-template-rows: 100%; 
+    column-gap: 20px;
 }
 
 #visualContainer {
     display: flex;
     justify-content: center;
+
+    padding: 20px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    border: 1.5px solid black;
+    background-color: whitesmoke;
 }
 #visual {
     height: min-content;
-    width: 95%;
+    width: 100%;
 
     display: grid;
     grid-template-columns: 55% 10% 35%;
@@ -129,12 +139,13 @@ td {
     #internalsContainer {
         grid-template-columns: 100%;
         grid-template-rows: max-content max-content;
+        column-gap: 0;
     }
     #progressWrapper {
         width: 100%;
 
         margin-top: 20px;
-        margin-bottom: 200px;
+        margin-bottom: 30px;
     }
 }
 
@@ -147,10 +158,10 @@ td {
     position: relative;
     right: -1px; /* So that the arrows don't overlap the border */
 
-    background-color: whitesmoke;
-    border: solid thin;
+    background-color: #0ca92e;
 }
 #busContainer {
+    position: relative;
     height: 100%;
     width: 100%;
 }
@@ -160,10 +171,12 @@ td {
     table-layout: fixed;
 
     border-collapse: collapse;
-    border: solid thin;
+    border: solid thin black;
+    background-color: rgb(255, 198, 54);
 }
 #RAM th, td {
     border-right: solid thin;
+    text-align: center;
 }
 
 .register {
@@ -242,17 +255,26 @@ td {
     position: absolute;
     z-index: 1;
 
-    height: 50px;
-    width: 200px;
+    height: 20px;
+    width: 100%;
 
     display: grid;
     grid-template-columns: 70% 30%;
     grid-template-rows: 100%;
     place-items: center;
+
+    --head-size: 30px;
+    --head-size-double: 20px;
+}
+@media (min-width:320px) and (max-width: 660px)  { 
+    .arrow {
+        --head-size: 14px;
+        --head-size-double: 12.5px;
+    }
 }
 .arrow > #body {
     height: 20%;
-    width: 110%;
+    width: 100%;
 
     position: relative;
     left: 10%;
@@ -263,7 +285,49 @@ td {
     /* https://www.w3schools.com/howto/howto_css_shapes.asp */
     width: 0;
 	height: 0;
-	border-top: 25px solid transparent;
-	border-left: 50px solid black;
-	border-bottom: 25px solid transparent;
+	border-top: calc(var(--head-size) / 2) solid transparent;
+	border-left: var(--head-size) solid black;
+	border-bottom: calc(var(--head-size) / 2) solid transparent;
+    
+    translate: -2px 0;
+}
+
+.arrow > #headLeft {
+    width: 0;
+	height: 0;
+	border-top: calc(var(--head-size-double) / 2) solid transparent;
+	border-right: var(--head-size-double) solid black;
+	border-bottom: calc(var(--head-size-double) / 2) solid transparent;
+
+    translate: 3px 0;
+}
+.arrow > #headRight {
+    width: 0;
+	height: 0;
+	border-top: calc(var(--head-size-double) / 2) solid transparent;
+	border-left: var(--head-size-double) solid black;
+	border-bottom: calc(var(--head-size-double) / 2) solid transparent;
+    
+    translate: -2px 0;
+}
+
+#addressBus {
+    top: 5%;
+}
+#dataBus {
+    bottom: 5%;
+    width: 100%;
+
+    grid-template-columns: 30% 40% 30%;
+}
+#dataBus > #body {
+    width: 150%;
+    translate: -5% 0;
+}
+
+
+
+#disclaimer {
+    width: 100%;
+    margin-top: 5px;
 }

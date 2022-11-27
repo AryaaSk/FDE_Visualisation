@@ -54,94 +54,6 @@ const ResetComponents = () => {
     CIR = Instruction("", undefined);;
     Accumulator = undefined;
 }
-const SyncComponents = () => {
-    const [PCText, MARText, MDRText, CIRText, AccText] = [document.getElementById("PCText")!, document.getElementById("MARText")!, document.getElementById("MDRText")!, document.getElementById("CIRText")!, document.getElementById("AccumulatorText")!];
-    PCText.innerText = String(PC);
-    MARText.innerText = (MAR == undefined) ? "" : String(MAR);
-    MDRText.innerText = (MDR.operand == undefined) ? "" : `${MDR.opcode} ${MDR.operand}`; //opcode can be undefined since the value may just be a static number
-    CIRText.innerText = (CIR.operand == undefined) ? "" : `${CIR.opcode} ${CIR.operand}`;
-    AccText.innerText = (Accumulator == undefined) ? "" : String(Accumulator);
-
-
-    const RAMTable = document.getElementById("RAM")!;
-    RAMTable.innerHTML = "";
-    
-    const headers = document.createElement('tr');
-    headers.innerHTML = `
-    <th> Address </th>
-    <th> Value </th>
-    `;
-    RAMTable.append(headers);
-
-    for (const [i, data] of RAM.entries()) {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-        <td> ${i} </td>
-        <td> ${data.opcode} ${data.operand} </td>
-        `;
-        RAMTable.append(row)
-    }
-
-
-    const cycleProgressText = document.getElementById("cycleProgressText")!;
-    cycleProgressText.innerText = `Cycle ${CYCLE_COUNTER + 1}`; //CYCLE_COUNTER starts at 0, but 1 is more understandable
-
-    const progressTable = document.getElementById("progress")!;
-    progressTable.innerHTML = "";
-    for (const update of CURRENT_CYCLE) {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td> ${update} </td>`;
-
-        if (update == "Prepare for next cycle") {
-            row.className = "final";
-        }
-        else if (update == "Stopped program") {
-            row.className = "finalStopped";
-        }
-        progressTable.append(row);
-    }
-
-    if (CURRENT_CYCLE.length == 0) {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td><i> No progress yet... </i></td>`;
-        progressTable.append(row);
-    }
-}
-const InitialiseInstructionSet = () => {
-    const instructionSetTable = document.getElementById("instructionSet")!;
-    
-    instructionSetTable.innerHTML = "";
-    const headers = document.createElement('tr');
-    headers.innerHTML = `
-    <th> Instruction </th>
-    <th> Explanation </th>
-    `;
-    instructionSetTable.append(headers);
-
-    for (const key in OPERATIONS) {
-        const instruction = OPERATIONS[key];
-        const row = document.createElement('tr');
-        row.innerHTML = `
-        <td>${instruction.description}</td>
-        <td>${instruction.explanation}</td>
-        `;
-        instructionSetTable.append(row);
-    }
-}
-
-const InitListeners = () => {
-    const compileButton = document.getElementById("compile")!;
-    const nextStepButton = document.getElementById("increment")!;
-
-    compileButton.onclick = () => {
-        CompileAssemblyCode();
-    }
-    nextStepButton.onclick = () => {
-        IncrementStep();
-    }
-}
-
-
 
 const CompileAssemblyCode = () => {
     const editor = <HTMLTextAreaElement>document.getElementById("editor")!;
@@ -271,6 +183,7 @@ const IncrementStep = () => {
     STEP_COUNTER += 1;
 }
 const ProgressUpdate = (update: string) => {
+    //Could have an animation later on
     CURRENT_CYCLE.push(update);
 }
 
@@ -278,6 +191,8 @@ const ProgressUpdate = (update: string) => {
 
 const Main = () => {
     InitialiseInstructionSet();
+    PositionArrows();
+    InitListeners();
 
     ResetRAM(RAM_STORAGE);
     STEP_COUNTER = 0;
@@ -286,8 +201,6 @@ const Main = () => {
     PROGRAM_HALTED = false;
     ResetComponents();
     SyncComponents();
-
-    InitListeners();
 
     /*
     Sample assembly code to load 10 and 25, then add them together and store result at address 2
