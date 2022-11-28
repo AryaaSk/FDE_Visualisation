@@ -62,8 +62,8 @@ const CompileAssemblyCode = () => {
 
     const instructions: Instruction[] = [];
     for (const line of lines) {
-        if (line.trim() == "") {
-            continue; //just a break line
+        if (line.trim() == "" || line.startsWith("//")) {
+            continue; //just a break line or comment
         }
 
         const split = line.split(" ");
@@ -202,29 +202,9 @@ const Main = () => {
     ResetComponents();
     SyncComponents();
 
-    /*
-    Sample assembly code to load 10 and 25, then add them together and store result at address 2
-    RAM[0] = Instruction("LOADV", 10);
-    RAM[1] = Instruction("STORE", 0);
-    RAM[2] = Instruction("LOADV", 25);
-    RAM[3] = Instruction("STORE", 1);
-    RAM[4] = Instruction("LOADA", 0);
-    RAM[5] = Instruction("ADD", 1);
-    RAM[6] = Instruction("STORE", 2);
-
-    Assembly:
-    LOADV 10
-    STORE 0
-    LOADV 25
-    STORE 1
-    LOADA 0
-
-    ADD 1
-    STORE 2
-    HALT 0
-    */
-
+    //Sample assembly code to load 10 and 25, then add them together and store result at address 2
     const editor = <HTMLTextAreaElement>document.getElementById("editor")!;
+    /*
     editor.value = 
 `LOADV 10
 STORE 0
@@ -235,6 +215,33 @@ LOADA 0
 ADD 1
 STORE 2
 HALT 0
-    `;
+`;
+    */
+
+    //Sample boolean logic in assembly
+    editor.value = 
+`//Sample program to check larger number
+
+LOADV 10
+STORE 0
+LOADV 20
+STORE 1
+
+//CURRENTLY ADDRESS 3
+//10 STORED AT RAM_0
+//20 STORED IN ACCUMULATOR AND RAM_1
+
+COMPARE 0
+GOTO 7
+GOTO 9
+
+OUTPUT 1 //IF 0 IS SMALLER
+GOTO 10
+
+OUTPUT 0 //IF 1 IS SMALLER
+
+HALT 0
+`;
+
 }
 Main();

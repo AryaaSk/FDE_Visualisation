@@ -74,26 +74,18 @@ button {
 
 
 
-#buttons {
+#compileWrapper {
+    height: max-content;
+    width: 100%;
+}
+#runButtons {
     height: max-content;
     width: 100%;
 
     display: grid;
-    grid-template-columns: 33.3% 33.3% 33.3%;
+    grid-template-columns: 50% 50%;
     grid-template-rows: 100%;
     place-items: center;
-}
-@media (min-width:320px) and (max-width: 800px)  { 
-    #buttons {
-        grid-template-columns: 50% 50%;
-        grid-template-rows: max-content max-content;
-    }
-    #buttons > #compile {
-        width: 150px;
-
-        grid-column: 1/3;
-        margin-bottom: 20px;
-    }
 }
 
 .runButton {
@@ -110,6 +102,15 @@ button {
 
 
 
+#internalsLabel {
+    margin: 0;
+    margin-bottom: 5px;
+}
+@media (min-width:320px) and (max-width: 800px)  { 
+    #internalsLabel {
+        margin-bottom: 15px;
+    }
+}
 #internalsContainer {
     height: max-content;
     width: 100%;
@@ -250,7 +251,6 @@ button {
     font-size: 2rem;
     translate: 0 -5px; /* Seems to center it better */
 }
-
 @media (min-width:320px) and (max-width: 660px)  { 
     .register > h2 {
         font-size: medium;
@@ -279,6 +279,14 @@ button {
 
     transform: translate(-50%, -50%); /* This is a shorthand of
                                          translateX(-50%) and translateY(-50%) */
+}
+#CIR > #CIRText {
+    font-size: x-large;
+}
+@media (min-width:320px) and (max-width: 660px)  { 
+    #CIR > #CIRText {
+        font-size: medium;
+    }
 }
 #Accumulator {
     bottom: 5%;

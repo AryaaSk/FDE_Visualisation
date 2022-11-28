@@ -16,97 +16,106 @@
 
     <h1><u>Fetch-Decode-Execute Visualisation</u></h1>
 
-    <div id="editorContainer">
-        <div class="container">
-            <table id="instructionSet" frame=void rules=rows>
-                <tr>
-                    <th> Instruction </th>
-                    <th> Explanation </th>
-                </tr>
+    <div>
+        <h2>Code Editor</h2>
+        <div id="editorContainer">
+            <div class="container">
+                <table id="instructionSet" frame=void rules=rows>
+                    <tr>
+                        <th> Instruction </th>
+                        <th> Explanation </th>
+                    </tr>
 
-                <!-- Added dynamically -->
-            </table>
+                    <!-- Added dynamically -->
+                </table>
+            </div>
+
+            <div class="container" id="editorWrapper">
+                <textarea id="editor" placeholder="Write assembly code using instruction set"></textarea>
+            </div>
         </div>
+        <br>
 
-        <div class="container" id="editorWrapper">
-            <textarea id="editor" placeholder="Write assembly code using instruction set"></textarea>
+        <div id="compileWrapper">
+            <button class="runButton" id="compile">Compile Assembly Code</button>
         </div>
     </div>
 
-    <br>
+    <br><br> <!-- Gap between 'compile' button and 'internals' h2 tag -->
 
-    <div id="buttons">
-        <button class="runButton" id="compile">Compile Assembly Code</button>
-        <button class="runButton" id="increment">Next Step</button>
-        <button class="runButton" id="nextCycle">Next Cycle</button>
-    </div>
+    <div>
+        <h2 id="internalsLabel">Internals</h2>
+        <div id="runButtons">
+            <button class="runButton" id="increment">Next Step</button>
+            <button class="runButton" id="nextCycle">Next Cycle</button>
+        </div>
 
-    <br>
+        <br>
+        <div id="internalsContainer">
+            <div class="container" id="visualContainer">
+                <div id="visual">
 
-    <div id="internalsContainer">
-        <div class="container" id="visualContainer">
-            <div id="visual">
+                    <div id="CPU">
+                        <div class="register" id="PC">
+                            <h2> PC </h3>
+                            <div class="container" id="PCText"> 1 </div>
+                        </div>
+                        <div class="register" id="MAR">
+                            <h2> MAR </h3>
+                            <div class="container" id="MARText"> 1 </div>
+                        </div>
+                        <div class="register" id="MDR">
+                            <h2> MDR </h3>
+                            <div class="container" id="MDRText"> 0 </div>
+                        </div>
+                        <div class="register" id="CIR">
+                            <h2> CIR </h3>
+                            <div class="container" id="CIRText"> LOAD 120 </div>
+                        </div>
+                        <div class="register" id="Accumulator">
+                            <h2> Acc </h3>
+                            <div class="container" id="AccumulatorText"> 1 </div>
+                        </div>
+                    </div>
 
-                <div id="CPU">
-                    <div class="register" id="PC">
-                        <h2> PC </h3>
-                        <div class="container" id="PCText"> 1 </div>
+                    <div id="busContainer">
+                        <div class="arrow" id="addressBus">
+                            <div id="body"></div>
+                            <div id="head"></div>
+                        </div>
+                        <div class="arrow" id="dataBus">
+                            <div id="headLeft"></div>
+                            <div id="body"></div>
+                            <div id="headRight"></div>
+                        </div>
                     </div>
-                    <div class="register" id="MAR">
-                        <h2> MAR </h3>
-                        <div class="container" id="MARText"> 1 </div>
-                    </div>
-                    <div class="register" id="MDR">
-                        <h2> MDR </h3>
-                        <div class="container" id="MDRText"> 0 </div>
-                    </div>
-                    <div class="register" id="CIR">
-                        <h2> CIR </h3>
-                        <div class="container" id="CIRText"> LOAD 120 </div>
-                    </div>
-                    <div class="register" id="Accumulator">
-                        <h2> Acc </h3>
-                        <div class="container" id="AccumulatorText"> 1 </div>
+
+                    <div class="container">
+                        <table id="RAM" frame=void rules=rows>
+                            <tr>
+                                <th> Address </th>
+                                <th> Value </th>
+                            </tr>
+
+                            <!-- Loaded dynamically -->
+                        </table>
                     </div>
                 </div>
+            </div>
 
-                <div id="busContainer">
-                    <div class="arrow" id="addressBus">
-                        <div id="body"></div>
-                        <div id="head"></div>
-                    </div>
-                    <div class="arrow" id="dataBus">
-                        <div id="headLeft"></div>
-                        <div id="body"></div>
-                        <div id="headRight"></div>
-                    </div>
-                </div>
+            <div class="container" id="progressWrapper">
+                <h2 id="cycleProgressText">Cycle X</h2>
 
-                <div class="container">
-                    <table id="RAM" frame=void rules=rows>
-                        <tr>
-                            <th> Address </th>
-                            <th> Value </th>
-                        </tr>
-
-                        <!-- Loaded dynamically -->
-                    </table>
-                </div>
+                <table id="progress" frame=void rules=rows>
+                    <tr> <td> Program counter set to 0 </td> </tr>
+                    <!-- Set dynamically -->
+                </table>
             </div>
         </div>
 
-        <div class="container" id="progressWrapper">
-            <h2 id="cycleProgressText">Cycle X</h2>
-
-            <table id="progress" frame=void rules=rows>
-                <tr> <td> Program counter set to 0 </td> </tr>
-                <!-- Set dynamically -->
-            </table>
+        <div id="disclaimer">
+            <i>This is not 100% accurate, I have hidden crucial components such as the Clock or ALU to keep it simple</i>
         </div>
-    </div>
-
-    <div id="disclaimer">
-        <i>This is not 100% accurate, I have hidden crucial components such as the Clock or ALU to keep it simple</i>
     </div>
 
 </body>

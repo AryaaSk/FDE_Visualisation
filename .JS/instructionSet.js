@@ -23,7 +23,7 @@ const OPERATIONS = {
     },
     "ADD": {
         description: "ADD [Address]",
-        explanation: "Adds value from accumulator to value at specified RAM address, and stores result in accumulator",
+        explanation: "Adds value from accumulator to value at specified RAM address, and stores result in Accumulator",
         callback: (value) => {
             const value1 = Accumulator;
             const value2 = value;
@@ -47,6 +47,41 @@ const OPERATIONS = {
         },
         addressOrValue: "V"
     },
+    "GOTO": {
+        description: "GOTO [Address]",
+        explanation: "Changes changes value of PC, which allows you to jump to a specific instruction in RAM",
+        callback: (value) => {
+            PC = value;
+            ProgressUpdate(`Goto address ${value}, by setting PC to ${value}`);
+        },
+        addressOrValue: "V"
+    },
+    "COMPARE": {
+        description: "COMPARE [Address]",
+        explanation: "Compares value in Accumulator to value at specified RAM address, <= than wil just execute line below, but > than will jump 1 line to the second line below",
+        callback: (value) => {
+            const accumulatorValue = Accumulator;
+            if (value <= accumulatorValue) {
+                //do nothing, we just move on like usual
+                ProgressUpdate(`${value} <= ${accumulatorValue}, so continue onto next line`);
+            }
+            else {
+                //jump PC += 1 to skip a line
+                PC += 1;
+                ProgressUpdate(`${value} > ${accumulatorValue}, so increment PC (${PC - 1} → ${PC}) to skip next line`);
+            }
+        },
+        addressOrValue: "A"
+    },
+    "OUTPUT": {
+        description: "OUTPUT [Address]",
+        explanation: "Outputs the data/operand found at the specified RAM address",
+        callback: (value) => {
+            alert(value);
+            ProgressUpdate(`Output value ${value}`);
+        },
+        addressOrValue: "A"
+    },
     "HALT": {
         description: "HALT 0",
         explanation: "Stops the program",
@@ -56,13 +91,4 @@ const OPERATIONS = {
         },
         addressOrValue: "V"
     },
-    "GOTO": {
-        description: "GOTO [Address]",
-        explanation: "Changes changes value of PC, which allows you to jump to a specific instruction in RAM",
-        callback: (value) => {
-            PC = value;
-            ProgressUpdate(`Set PC to ${value}`);
-        },
-        addressOrValue: "V"
-    }
 };
