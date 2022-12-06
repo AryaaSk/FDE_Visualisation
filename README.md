@@ -8,8 +8,8 @@ This allows you write some assembly code in a sandbox assembly set, and see how 
 ## Previews
 ![Preview 1](/Previews/1.png?raw=true)
 <p float="center">
-  <img src="/Previews/2.png?raw=true" width="375" />
-  <img src="/Previews/3.png?raw=true" width="375" />
+  <img src="/Previews/2.png?raw=true" width="50%" />
+  <img src="/Previews/3.png?raw=true" width="50%" />
 </p>
 
 ## <u>How it works</u>
