@@ -6,10 +6,10 @@
 This allows you write some assembly code in a sandbox assembly set, and see how the code is ran step by step at the CPU level
 
 ## Previews
-<p float="left">
-  <img src="/Previews/1.png?raw=true" width="300" />
-  <img src="/Previews/2.png?raw=true" width="300" />
-  <img src="/Previews/3.png?raw=true" width="300" />
+![Preview 1](/Previews/1.png?raw=true)
+<p float="center">
+  <img src="/Previews/2.png?raw=true" width="375" />
+  <img src="/Previews/3.png?raw=true" width="375" />
 </p>
 
 ## <u>How it works</u>
