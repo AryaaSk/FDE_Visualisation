@@ -103,6 +103,8 @@ Usually a CU would coordinate this, however since there isn't one in this visual
 ## Design
 Another area I struggled with was design, since even at the current moment the visualisation's design is not very interesting. I took inspiration from other images and diagrams of the CPU, however I will continue to try and improve the design into the future.
 
+I would also like to add arrows showing the flow of data in the future, since it will make the visualisation more understandable, especially when coupled with the explanations of each cycle.
+
 ## Assembly Code
 The assembly editor uses a custom instruction set, which you can see from the table next to the editor. Below are some sample programs to understand:
 
