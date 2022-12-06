@@ -214,6 +214,8 @@ STORE 1
 LOADA 0
 ADD 1
 STORE 2
+OUTPUT 2
+
 HALT 0
 `;
     */
