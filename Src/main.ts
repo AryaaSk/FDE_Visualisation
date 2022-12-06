@@ -11,8 +11,8 @@ const Instruction = (opcode: string, operand?: number) => {
 
 let PC = 0;
 let MAR: number | undefined = undefined;
-let MDR = Instruction("", undefined);;
-let CIR = Instruction("", undefined);;
+let MDR = Instruction("", undefined);
+let CIR = Instruction("", undefined);
 let Accumulator: number | undefined = undefined;
 
 let RAM: Instruction[] = [];
